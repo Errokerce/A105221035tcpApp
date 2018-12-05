@@ -25,26 +25,24 @@ namespace A105221035tcpApp
             nickname_TB.Text = playerName;
         }
         #region Var
-        Button[,] btns = new Button[5, 5];
-        bool isFirst, isShow = false;
-        bool isConnecting = false;
-        string player = "";
-        Socket socketClient;
-        Thread listenThread;
         IPEndPoint EP;
-        bool IsConnect;
-        byte[] data = new byte[10024];
+        Thread listenThread;
+        Socket socketClient;
+        Button[,] btns = new Button[5, 5];
         Point displayPoint = new Point(185, 245);
         Point outerSpace = new Point(2000, 2000);
-        int winpoint = 2;
+        int winpoint = 5;
+        bool isFirst;
+        bool IsConnect;
+        bool isConnecting = false;
+        byte[] data = new byte[10024];
+        string player = "";
         #endregion
 
         #region FormEvent
         private void Form_Load(object sender, EventArgs e)
         {
             btnInit();
-            //MsgShow("sssssss");
-            //panalInti("ssssssss", "sdad", "asdsad");
             panel1.Location = outerSpace;
             panel2.Location = outerSpace;
         }
@@ -63,15 +61,13 @@ namespace A105221035tcpApp
                     isConnecting = false;
                     player = "";
                 }
-                //udpSend("C," + (sender as Button).Text);
-                //listBox1.Items.Add("Local clicked " + (sender as Button).Tag + " ,now line " + Check());
             }
         }
         private void entry_Btn_Click(object sender, EventArgs e)
         {
             try
             {
-                if (serverIP_TB.Text != "" && port_TB.Text != "" && nickname_TB.Text != "")      //checking TB != ""
+                if (serverIP_TB.Text != "" && port_TB.Text != "" && nickname_TB.Text != "")
                 {
                     socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     EP = new IPEndPoint(IPAddress.Parse(serverIP_TB.Text), int.Parse(port_TB.Text));
@@ -97,7 +93,6 @@ namespace A105221035tcpApp
                 MessageBox.Show(ex.ToString());
             }
         }
-
         private void pbtnT_Click(object sender, EventArgs e)
         {
             if (sender == pbtnT)
@@ -120,9 +115,25 @@ namespace A105221035tcpApp
                 socketSend("logout," + nickname_TB.Text);
             }
             catch { }
-            //Application.Exit();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            panel2.Location = outerSpace;
+        }
+        private void onlineList_LB_DoubleClick(object sender, EventArgs e)
+        {
+            if (onlineList_LB.SelectedIndex == -1)
+                return;
+            if ((player = onlineList_LB.GetItemText(onlineList_LB.SelectedItem)) == nickname_TB.Text)
+                return;
+            if (isConnecting)
+                return;
+            isFirst = true;
+            isConnecting = true;
+            socketSend(string.Format("B,Ask,{0},{1},", nickname_TB.Text, player));
         }
         #endregion
+
         #region Socket
         public void socketReceive()
         {
@@ -234,7 +245,7 @@ namespace A105221035tcpApp
                                 btn.Enabled = false;
                         if (Check() == winpoint)
                         {
-                            socketSend(string.Format("B,Win,{0},{1}.",player, nickname_TB.Text));
+                            socketSend(string.Format("B,Win,{0},{1}.", player, nickname_TB.Text));
                             foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
                             MsgShow("您以獲勝");
                             isConnecting = false;
@@ -318,58 +329,6 @@ namespace A105221035tcpApp
             }
 
         }
-        private void ReceiveProcess(String ss)
-        {
-            string[] args = ss.Split(',');
-
-            switch (args[0])
-            {
-                case "C":
-                    foreach (Button btn in btns)
-                        if (btn.Text == args[1])
-                            btn.Enabled = false;
-                    if (Check() == 5)
-                        socketSend("B,w," + nickname_TB.Text + ",");
-                    //udpSend("W");
-                    isFirst = true;
-                    break;
-                case "W":
-                    foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
-                    if (Check() == 5 && isShow == false)
-                        MessageBox.Show(this.Text + "You Win!!!!!");
-                    else
-                        MessageBox.Show(this.Text + "You Lose....");
-                    isShow = true;
-                    break;
-                case "cl":
-                    btnRnd();
-                    isShow = false;
-                    break;
-                case "CF":
-                    isFirst = true;
-                    break;
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            panel2.Location = outerSpace;
-        }
-
-        private void onlineList_LB_DoubleClick(object sender, EventArgs e)
-        {
-            if (onlineList_LB.SelectedIndex == -1)
-                return;
-            if ((player = onlineList_LB.GetItemText(onlineList_LB.SelectedItem)) == nickname_TB.Text)
-                return;
-            if (isConnecting)
-                return;
-            player = onlineList_LB.GetItemText(onlineList_LB.SelectedItem);
-            isFirst = true;
-            isConnecting = true;
-            socketSend(string.Format("B,Ask,{0},{1},", nickname_TB.Text, player));
-        }
-
         private int Check()
         {
             int line = 0, p3 = 0, p4 = 0;
