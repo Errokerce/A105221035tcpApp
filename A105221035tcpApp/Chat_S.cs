@@ -132,7 +132,9 @@ namespace A105221035tcpApp
                 case "C":
                     sendTo(string.Format("C,{0},{1},", args[2],args[3]), (Socket)HT[args[2]]);
                     break;
-
+                case "Win":
+                    sendTo(string.Format("Win,{0},{1},", args[2], args[3]), (Socket)HT[args[2]]);
+                    break;
             }
         }
         private string onlineList()

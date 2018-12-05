@@ -128,7 +128,7 @@
             this.onlineList_LB.Location = new System.Drawing.Point(584, 170);
             this.onlineList_LB.Margin = new System.Windows.Forms.Padding(2);
             this.onlineList_LB.Name = "onlineList_LB";
-            this.onlineList_LB.Size = new System.Drawing.Size(98, 424);
+            this.onlineList_LB.Size = new System.Drawing.Size(98, 412);
             this.onlineList_LB.TabIndex = 43;
             this.onlineList_LB.DoubleClick += new System.EventHandler(this.onlineList_LB_DoubleClick);
             // 
@@ -212,7 +212,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(687, 598);
+            this.ClientSize = new System.Drawing.Size(687, 587);
             this.Controls.Add(this.onlineList_LB);
             this.Controls.Add(this.debug);
             this.Controls.Add(this.nickname_Lab);

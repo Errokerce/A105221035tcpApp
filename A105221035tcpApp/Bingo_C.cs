@@ -36,6 +36,7 @@ namespace A105221035tcpApp
         byte[] data = new byte[10024];
         Point displayPoint = new Point(185, 245);
         Point outerSpace = new Point(2000, 2000);
+        int winpoint = 2;
         #endregion
 
         #region FormEvent
@@ -54,6 +55,13 @@ namespace A105221035tcpApp
                 (sender as Button).Enabled = false;
                 socketSend(string.Format("B,C,{0},{1},", player, (sender as Button).Text));
                 isFirst = false;
+                if (Check() == winpoint)
+                {
+                    socketSend(string.Format("B,Win,{0},{1}.", player, nickname_TB.Text));
+                    foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
+                    MsgShow("您以獲勝");
+                    isConnecting = false;
+                }
                 //udpSend("C," + (sender as Button).Text);
                 //listBox1.Items.Add("Local clicked " + (sender as Button).Tag + " ,now line " + Check());
             }
@@ -110,7 +118,7 @@ namespace A105221035tcpApp
                 socketSend("logout," + nickname_TB.Text);
             }
             catch { }
-            Application.Exit();
+            //Application.Exit();
         }
         #endregion
         #region Socket
@@ -178,6 +186,12 @@ namespace A105221035tcpApp
                         break;
                     case "logout":
                         onlineList_LB.Items.Remove(pt[1]);
+                        if (pt[1] == player)
+                        {
+                            MsgShow("您的對手離開了遊戲，請尋找新對手");
+                            isConnecting = false;
+                        }
+
                         break;
                     case "Ask":
                         try
@@ -212,10 +226,20 @@ namespace A105221035tcpApp
                         foreach (Button btn in btns)
                             if (btn.Text.Equals(pt[2]))
                                 btn.Enabled = false;
-                        if (Check() == 5)
-                            socketSend("B,w," + nickname_TB.Text + ",");
+                        if (Check() == winpoint)
+                        {
+                            socketSend(string.Format("B,Win,{0},{1}.",player, nickname_TB.Text));
+                            foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
+                            MsgShow("您以獲勝");
+                            isConnecting = false;
+                        }
                         //udpSend("W");
                         isFirst = true;
+                        break;
+                    case "Win":
+                        foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
+                        MsgShow(string.Format("玩家{0} 以獲勝", player));
+                        isConnecting = false;
                         break;
                 }
                 pt = null;

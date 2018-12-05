@@ -16,7 +16,7 @@ namespace A105221035tcpApp
         {
             InitializeComponent();
 
-            int clientAmount = 3;
+            int clientAmount = 5;
 
             //Chat_C[] C = new Chat_C[3];
             //for (int i = 0; i < C.Length; i++)
