@@ -61,6 +61,7 @@ namespace A105221035tcpApp
                     foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
                     MsgShow("您以獲勝");
                     isConnecting = false;
+                    player = "";
                 }
                 //udpSend("C," + (sender as Button).Text);
                 //listBox1.Items.Add("Local clicked " + (sender as Button).Tag + " ,now line " + Check());
@@ -108,6 +109,7 @@ namespace A105221035tcpApp
             {
                 socketSend(string.Format("B,Cencel,{0},{1},", player, 1));
                 isConnecting = false;
+                player = "";
             }
             panel1.Location = outerSpace;
         }
@@ -190,6 +192,7 @@ namespace A105221035tcpApp
                         {
                             MsgShow("您的對手離開了遊戲，請尋找新對手");
                             isConnecting = false;
+                            player = "";
                         }
 
                         break;
@@ -204,7 +207,9 @@ namespace A105221035tcpApp
                                 PanalInti(input);
                             }
                             else
+                            {
                                 socketSend(string.Format("B,Cencel,{0},{1},", pt[1], 2));
+                            }
                         }
                         catch (Exception e)
                         {
@@ -217,6 +222,7 @@ namespace A105221035tcpApp
                         break;
                     case "Cencel":
                         isConnecting = false;
+                        player = "";
                         if (pt[2] == "1")
                             MsgShow("對方拒絕了遊戲邀請");
                         if (pt[2] == "2")
@@ -232,6 +238,7 @@ namespace A105221035tcpApp
                             foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
                             MsgShow("您以獲勝");
                             isConnecting = false;
+                            player = "";
                         }
                         //udpSend("W");
                         isFirst = true;
@@ -240,6 +247,7 @@ namespace A105221035tcpApp
                         foreach (Button btn in btns) btn.Click -= new EventHandler(btnC);
                         MsgShow(string.Format("玩家{0} 以獲勝", player));
                         isConnecting = false;
+                        player = "";
                         break;
                 }
                 pt = null;
