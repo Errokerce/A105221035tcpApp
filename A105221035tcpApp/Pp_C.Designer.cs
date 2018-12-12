@@ -241,6 +241,9 @@
             this.playerPb.Size = new System.Drawing.Size(100, 25);
             this.playerPb.TabIndex = 0;
             this.playerPb.TabStop = false;
+            this.playerPb.MouseDown += new System.Windows.Forms.MouseEventHandler(this.playerPb_MouseDown);
+            this.playerPb.MouseMove += new System.Windows.Forms.MouseEventHandler(this.playerPb_MouseMove);
+            this.playerPb.MouseUp += new System.Windows.Forms.MouseEventHandler(this.playerPb_MouseUp);
             // 
             // enemyPb
             // 

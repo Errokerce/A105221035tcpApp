@@ -24,7 +24,7 @@ namespace A105221035tcpApp
 
         #region Var
         int speed = 4;
-        bool isFirst, isShow = false;
+        bool isFirst, isClicking = false;
         bool isConnecting = false;
         bool IsConnect;
         byte[] data = new byte[10024];
@@ -167,8 +167,8 @@ namespace A105221035tcpApp
         int y;
         private void BallStart()
         {
-            x = rnd.Next(1, 1) * (rnd.Next(2) == 0 ? -1 : 1);
-            y = rnd.Next(1, 1) * (rnd.Next(2) == 0 ? -1 : 1);
+            x = rnd.Next(1, 2) * (rnd.Next(2) == 0 ? -1 : 1);
+            y = rnd.Next(1, 4) * (rnd.Next(2) == 0 ? -1 : 1);
             Btimer.Start();
         }
         private void BallMove(int x,int y)
@@ -178,17 +178,20 @@ namespace A105221035tcpApp
             if(ballLoc.Y<enemyPb.Bottom)
             {
                 if (ballLoc.X< enemyPb.Right && ballLoc.X+ballPb.Width > enemyPb.Left)
-                {
                     this.y = Math.Abs(y);
-                    ballLoc.Y = enemyPb.Bottom + Math.Abs(enemyPb.Bottom - ballLoc.Y);
-                }
-
+                if (ballLoc.X + ballPb.Width / 2 > enemyPb.Right && ballLoc.X < enemyPb.Right)
+                    this.x = x > 0 ? x : -x;
+                if (ballLoc.X + ballPb.Width / 2 < enemyPb.Left && ballLoc.X > enemyPb.Left)
+                    this.x = x < 0 ? x : -x;
             }
-            if (ballPb.Left < playerPb.Right && ballPb.Right > playerPb.Left && ballPb.Bottom > playerPb.Top)
+            else if (ballLoc.Y+ballPb.Height > playerPb.Top)
             {
-                this.y = -y;
-                //ballLoc.Y = playerPb.Top + Math.Abs(playerPb.Top-ballLoc.Y );
-                ballLoc.Y = ballLoc.Y - (ballLoc.Y + ballPb.Height - playerPb.Top);
+                if (ballLoc.X < playerPb.Right && ballLoc.X + ballPb.Width > playerPb.Left)
+                    this.y = y<0? y :-y;
+                if (ballLoc.X + ballPb.Width / 2 > playerPb.Right && ballLoc.X < playerPb.Right)
+                    this.x = x > 0 ? x : -x;
+                if (ballLoc.X + ballPb.Width / 2 < playerPb.Left && ballLoc.X > playerPb.Left)
+                    this.x = x < 0 ? x : -x;
             }
             if (ballLoc.X < 0)
             {
@@ -239,6 +242,21 @@ namespace A105221035tcpApp
             panel2.Location = displayPoint;
         }
 
+        private void playerPb_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(isClicking)
+                playerPb.Location = new Point(playerPb.Location.X+e.X-playerPb.Width/2, gPanel.Height - (30 + playerPb.Height));
+        }
+
+        private void playerPb_MouseDown(object sender, MouseEventArgs e)
+        {
+            isClicking = true;
+        }
+
+        private void playerPb_MouseUp(object sender, MouseEventArgs e)
+        {
+            isClicking = false;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
